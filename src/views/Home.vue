@@ -95,18 +95,74 @@
         <p>遵循遗忘曲线（1/2/4/7/15/30 天），在最佳时机巩固记忆。</p>
       </router-link>
     </div>
+    <div class="card backup-card">
+      <h3>☁️ 云端备份与恢复</h3>
+      <p class="backup-desc">进度会自动备份到云端。请抄下或截图保存你的备份 ID，清除浏览器缓存后可用它恢复数据。</p>
+      <div class="backup-row">
+        <code class="backup-id">{{ showId ? backupId : maskedId }}</code>
+        <button class="mini-btn" @click="showId = !showId">{{ showId ? '隐藏' : '显示' }}</button>
+        <button class="mini-btn" @click="copyId">{{ copied ? '已复制 ✓' : '复制' }}</button>
+      </div>
+      <details class="restore">
+        <summary>清除缓存了？点这里用备份 ID 恢复数据</summary>
+        <div class="restore-body">
+          <input v-model="restoreId" placeholder="粘贴你的备份 ID" class="restore-input" />
+          <button class="btn" :disabled="restoring" @click="doRestore">
+            {{ restoring ? '恢复中…' : '恢复' }}
+          </button>
+          <p v-if="restoreMsg" class="restore-msg" :class="{ error: restoreError }">{{ restoreMsg }}</p>
+        </div>
+      </details>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useProgress } from '../composables/useProgress'
 import { usePhonetics } from '../composables/usePhonetics'
+import { getBackupId, restoreFromId } from '../composables/useSync'
 
 const { dueCount, learnedCount, masteredCount: wordMasteredCount, todayStats, weekStats } = useProgress()
 const { PHONEME_TOTAL, masteredCount, phoneticsMastered, remainingCount } = usePhonetics()
 
 const reviewBadge = computed(() => (phoneticsMastered.value ? dueCount.value : remainingCount.value))
+
+const backupId = getBackupId()
+const showId = ref(false)
+const copied = ref(false)
+const restoreId = ref('')
+const restoring = ref(false)
+const restoreMsg = ref('')
+const restoreError = ref(false)
+
+const maskedId = computed(() =>
+  backupId.length > 8 ? backupId.slice(0, 4) + '••••••' + backupId.slice(-4) : '••••••••'
+)
+
+async function copyId() {
+  try {
+    await navigator.clipboard.writeText(backupId)
+    copied.value = true
+    setTimeout(() => (copied.value = false), 2000)
+  } catch {
+    showId.value = true
+  }
+}
+
+async function doRestore() {
+  restoring.value = true
+  restoreMsg.value = ''
+  const ok = await restoreFromId(restoreId.value)
+  restoring.value = false
+  restoreError.value = !ok
+  if (ok) {
+    restoreMsg.value = '恢复成功，即将刷新页面…'
+    setTimeout(() => location.reload(), 1200)
+  } else {
+    restoreMsg.value = '恢复失败：ID 无效或云端没有该 ID 的备份'
+  }
+}
 
 const reviewAccuracy = computed(() => {
   if (!todayStats.value.reviewed) return 100
@@ -148,6 +204,41 @@ function barHeight(count) {
 .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; }
 .swatch.learn { background: var(--primary); }
 .swatch.review { background: var(--success); }
+.backup-card { margin-top: 32px; }
+.backup-card h3 { font-size: 16px; margin-bottom: 6px; }
+.backup-desc { color: var(--text-light); font-size: 13px; margin-bottom: 12px; }
+.backup-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.backup-id {
+  background: var(--bg);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  word-break: break-all;
+  flex: 1;
+  min-width: 200px;
+}
+.mini-btn {
+  border: 1px solid var(--border);
+  background: #fff;
+  padding: 7px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--primary);
+}
+.restore { margin-top: 14px; }
+.restore summary { cursor: pointer; color: var(--primary); font-size: 14px; }
+.restore-body { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.restore-input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+}
+.restore-msg { width: 100%; font-size: 13px; color: var(--success); margin: 4px 0 0; }
+.restore-msg.error { color: var(--danger); }
 .paths { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
 .path { transition: transform 0.15s, box-shadow 0.15s; }
 .path:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(31, 36, 48, 0.1); }

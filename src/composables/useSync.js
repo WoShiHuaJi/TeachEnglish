@@ -16,6 +16,28 @@ function getUserId() {
 
 let started = false
 
+export function getBackupId() {
+  return getUserId()
+}
+
+export async function restoreFromId(id) {
+  const trimmed = (id || '').trim()
+  if (!/^[A-Za-z0-9-]{8,64}$/.test(trimmed)) return false
+  try {
+    const res = await fetch(`/api/progress?id=${encodeURIComponent(trimmed)}`)
+    const json = await res.json()
+    if (!json?.data) return false
+    localStorage.setItem(ID_KEY, trimmed)
+    const { state, persist } = useProgress()
+    Object.assign(state, json.data)
+    state.updatedAt = json.updatedAt
+    persist()
+    return true
+  } catch {
+    return false
+  }
+}
+
 export function initSync() {
   if (started) return
   started = true
