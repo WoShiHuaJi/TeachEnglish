@@ -60,7 +60,7 @@ export function usePhonetics() {
         const pb = state.phonemes[b.symbol]?.lastTry || 0
         return pb - pa
       })
-      .slice(0, SESSION_PHONEMES)
+      .slice(0, Number(state.settings?.dailyPhonemes) || SESSION_PHONEMES)
   }
 
   function buildQuestions(items) {

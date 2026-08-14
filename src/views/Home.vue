@@ -95,6 +95,25 @@
         <p>遵循遗忘曲线（1/2/4/7/15/30 天），在最佳时机巩固记忆。</p>
       </router-link>
     </div>
+    <div class="card settings-card">
+      <h3>⚙️ 每日学习量</h3>
+      <div class="setting-rows">
+        <label class="setting-row">
+          <span>每日新学音标（掌握全部音标前）</span>
+          <select :value="state.settings.dailyPhonemes" @change="setSetting('dailyPhonemes', Number($event.target.value))">
+            <option v-for="n in [2, 3, 4, 6, 8, 10, 12]" :key="n" :value="n">{{ n }} 个</option>
+          </select>
+        </label>
+        <label class="setting-row">
+          <span>每日新学单词（解锁单词后）</span>
+          <select :value="state.settings.dailyWords" @change="setSetting('dailyWords', Number($event.target.value))">
+            <option v-for="n in [5, 10, 15, 20, 30, 50]" :key="n" :value="n">{{ n }} 个</option>
+          </select>
+        </label>
+      </div>
+      <p class="settings-tip">每天学完当日内容后会立即出检测题，检验是否真正学会。</p>
+    </div>
+
     <div class="card backup-card">
       <h3>☁️ 云端备份与恢复</h3>
       <p class="backup-desc">进度会自动备份到云端。请抄下或截图保存你的备份 ID，清除浏览器缓存后可用它恢复数据。</p>
@@ -123,7 +142,7 @@ import { useProgress } from '../composables/useProgress'
 import { usePhonetics } from '../composables/usePhonetics'
 import { getBackupId, restoreFromId } from '../composables/useSync'
 
-const { dueCount, learnedCount, masteredCount: wordMasteredCount, todayStats, weekStats } = useProgress()
+const { dueCount, learnedCount, masteredCount: wordMasteredCount, todayStats, weekStats, state, setSetting } = useProgress()
 const { PHONEME_TOTAL, masteredCount, phoneticsMastered, remainingCount } = usePhonetics()
 
 const reviewBadge = computed(() => (phoneticsMastered.value ? dueCount.value : remainingCount.value))
@@ -239,6 +258,18 @@ function barHeight(count) {
 }
 .restore-msg { width: 100%; font-size: 13px; color: var(--success); margin: 4px 0 0; }
 .restore-msg.error { color: var(--danger); }
+.settings-card { margin-top: 32px; }
+.settings-card h3 { font-size: 16px; margin-bottom: 12px; }
+.setting-rows { display: flex; flex-direction: column; gap: 10px; }
+.setting-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; }
+.setting-row select {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+}
+.settings-tip { margin-top: 10px; font-size: 12px; color: var(--text-light); }
 .paths { grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); }
 .path { transition: transform 0.15s, box-shadow 0.15s; }
 .path:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(31, 36, 48, 0.1); }

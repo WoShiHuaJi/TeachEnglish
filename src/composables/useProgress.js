@@ -5,7 +5,15 @@ const STORAGE_KEY = 'english-learning-progress'
 const INTERVALS_DAYS = [0.01, 1, 2, 4, 7, 15, 30]
 const DAY = 24 * 60 * 60 * 1000
 
-const DEFAULTS = { words: {}, phoneticsDone: [], log: [], phonemes: {}, phoneticsUnlocked: false, updatedAt: 0 }
+const DEFAULTS = {
+  words: {},
+  phoneticsDone: [],
+  log: [],
+  phonemes: {},
+  phoneticsUnlocked: false,
+  updatedAt: 0,
+  settings: { dailyPhonemes: 6, dailyWords: 20 },
+}
 
 function load() {
   try {
@@ -34,9 +42,14 @@ export function useProgress() {
     item.lastReview = now
     item.nextReview = now + INTERVALS_DAYS[item.level] * DAY
     state.words[key] = item
-    state.log.push({ t: now, type, known })
+    state.log.push({ t: now, type, known, key })
     save()
     return item
+  }
+
+  function setSetting(name, value) {
+    state.settings = { ...state.settings, [name]: value }
+    save()
   }
 
   function getWordState(key) {
@@ -140,6 +153,7 @@ export function useProgress() {
     phonemeMasteredCount,
     todayStats,
     weekStats,
+    setSetting,
     resetAll,
     persist: save,
   }
