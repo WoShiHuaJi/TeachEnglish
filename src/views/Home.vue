@@ -199,14 +199,30 @@ function barHeight(count) {
 </script>
 
 <style scoped>
-.hero { margin-top: 24px; text-align: center; padding: 48px 24px; }
-.hero h1 { font-size: 30px; margin-bottom: 12px; }
-.hero p { color: var(--text-light); max-width: 520px; margin: 0 auto 24px; }
+.hero {
+  margin-top: 24px;
+  text-align: center;
+  padding: 48px 24px;
+  background: linear-gradient(135deg, #4f6df5 0%, #7a5cf6 100%);
+  color: #fff;
+}
+.hero h1 { font-size: 30px; margin-bottom: 12px; letter-spacing: -0.5px; }
+.hero p { color: rgba(255, 255, 255, 0.85); max-width: 520px; margin: 0 auto 24px; }
 .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.hero .btn { background: #fff; color: var(--primary); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15); }
+.hero .btn:hover { background: #f0f2ff; }
+.hero .btn.outline { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.7); box-shadow: none; }
+.hero .btn.outline:hover { background: rgba(255, 255, 255, 0.12); }
+@media (max-width: 640px) {
+  .hero { padding: 32px 16px; border-radius: 0 0 20px 20px; margin: 0 -14px; }
+  .hero h1 { font-size: 23px; letter-spacing: 0; }
+  .hero p { font-size: 13px; }
+}
 .stats { grid-template-columns: repeat(4, 1fr); margin-top: 20px; }
 @media (max-width: 640px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-.stat { text-align: center; padding: 18px; }
-.num { font-size: 28px; font-weight: 700; color: var(--primary); }
+.stat { text-align: center; padding: 18px 8px; }
+.num { font-size: 26px; font-weight: 700; color: var(--primary); }
+@media (max-width: 640px) { .num { font-size: 21px; } }
 .num.success { color: var(--success); }
 .num.warn { color: var(--warning); }
 .label { color: var(--text-light); font-size: 13px; }

@@ -55,14 +55,23 @@ const badgeCount = computed(() =>
 <style scoped>
 .layout { min-height: 100vh; display: flex; flex-direction: column; }
 .header {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 10;
 }
 .header-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
-.logo { font-size: 18px; font-weight: 700; color: var(--primary); }
+.logo {
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #4f6df5, #8b5cf6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 .nav { display: flex; gap: 4px; }
 .nav a {
   padding: 8px 14px;
@@ -120,13 +129,13 @@ const badgeCount = computed(() =>
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 3px;
     padding: 8px 0 6px;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-light);
     position: relative;
   }
-  .tab .icon { font-size: 20px; }
+  .tab .icon { font-size: 21px; line-height: 1.2; }
   .tab.router-link-active { color: var(--primary); font-weight: 600; }
 }
 </style>

@@ -268,4 +268,12 @@ function answerQuiz(opt) {
 .feedback { margin-top: 14px; font-size: 14px; }
 .feedback.ok { color: var(--success); }
 .feedback.bad { color: var(--danger); }
+@media (max-width: 640px) {
+  .flashcard { min-height: 240px; padding: 36px 16px; }
+  .word { font-size: 28px; }
+  .quiz-word { font-size: 26px; }
+  .quiz-cn { font-size: 19px; }
+  .unit-title { font-size: 18px; }
+  .actions .btn { flex: 1; }
+}
 </style>

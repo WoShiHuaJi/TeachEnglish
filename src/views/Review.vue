@@ -181,4 +181,9 @@ h2 { margin: 12px 0 8px; }
 .actions { display: flex; gap: 16px; justify-content: center; margin-top: 24px; }
 .result { max-width: 480px; margin: 0 auto; text-align: center; padding: 48px 24px; }
 .result p { color: var(--text-light); }
+@media (max-width: 640px) {
+  .flashcard { min-height: 240px; padding: 36px 16px; }
+  .word { font-size: 28px; }
+  .actions .btn { flex: 1; }
+}
 </style>

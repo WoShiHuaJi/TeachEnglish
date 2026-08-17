@@ -48,4 +48,11 @@ const next = computed(() => grammarTopics[index.value + 1])
   font-size: 14px;
 }
 .prev-next { display: flex; justify-content: space-between; margin-top: 20px; }
+@media (max-width: 640px) {
+  .article { font-size: 15px; }
+  .article :deep(h3) { font-size: 16px; margin: 16px 0 6px; }
+  .article :deep(table) { font-size: 13px; }
+  .article :deep(th), .article :deep(td) { padding: 6px 8px; }
+  .article-card { overflow-x: auto; }
+}
 </style>

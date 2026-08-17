@@ -89,6 +89,12 @@ function play(item) {
 .group { margin-bottom: 28px; }
 .group-title { font-size: 17px; margin-bottom: 12px; color: var(--text); }
 .symbols { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+@media (max-width: 640px) {
+  .symbols { grid-template-columns: repeat(2, 1fr); }
+  .symbol-card { padding: 12px; }
+  .symbol { font-size: 21px; }
+  .tip { font-size: 11px; }
+}
 .symbol-card { cursor: pointer; transition: transform 0.15s; padding: 16px; position: relative; }
 .symbol-card:hover { transform: translateY(-2px); }
 .symbol-card.mastered { border: 1px solid var(--success); }
